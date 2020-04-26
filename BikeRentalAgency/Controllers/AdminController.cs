@@ -43,6 +43,12 @@ namespace BikeRentalAgency.Controllers
             return bike;
         }
 
+        [HttpGet("Locations")]
+        public async Task<ActionResult<IEnumerable<Location>>> GetLocations()
+        {
+            var locations = _context.Locations.OrderBy(x => x.City);
+            return await locations.ToListAsync();
+        }
 
         //GET: Customers
         [HttpGet("Customers")]
