@@ -51,14 +51,14 @@ namespace BikeRentalAgency.Controllers
         }
 
         //GET: Customers
-        [HttpGet("Customers")]
-        public async Task<ActionResult<IEnumerable<Customer>>> GetCustomers()
+        [HttpGet("Employees")]
+        public async Task<ActionResult<IEnumerable<Employees>>> GetEmployees()
         {
-            var customers = _context.Customers.OrderBy(x => x.FirstName);
-            return await customers.ToListAsync();
+            var employee = _context.Employees.OrderBy(x => x.FirstName);
+            return await employee.ToListAsync();
         }
 
-        [HttpGet("Customers/{id}")]
+        [HttpGet("Employees/{id}")]
         public async Task<ActionResult<Employees>> GetEmployee(int id)
         {
             var employee = await _context.Employees.FindAsync(id);
