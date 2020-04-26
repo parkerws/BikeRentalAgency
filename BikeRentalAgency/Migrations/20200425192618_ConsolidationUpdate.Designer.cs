@@ -4,14 +4,16 @@ using BikeRentalAgency.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BikeRentalAgency.Migrations
 {
     [DbContext(typeof(BikeRentalContext))]
-    partial class BikeRentalContextModelSnapshot : ModelSnapshot
+    [Migration("20200425192618_ConsolidationUpdate")]
+    partial class ConsolidationUpdate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -71,53 +73,6 @@ namespace BikeRentalAgency.Migrations
                     b.HasIndex("ReservationsId");
 
                     b.ToTable("Bikes");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Brand = "Trek",
-                            Frame = 1,
-                            LocationId = 1,
-                            OnHire = false,
-                            type = 1
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Brand = "Mongoose",
-                            Frame = 0,
-                            LocationId = 3,
-                            OnHire = false,
-                            type = 2
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Brand = "Raleigh",
-                            Frame = 1,
-                            LocationId = 1,
-                            OnHire = false,
-                            type = 4
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Brand = "Diamondback",
-                            Frame = 1,
-                            LocationId = 4,
-                            OnHire = false,
-                            type = 0
-                        },
-                        new
-                        {
-                            Id = 5,
-                            Brand = "Specialized",
-                            Frame = 2,
-                            LocationId = 1,
-                            OnHire = false,
-                            type = 2
-                        });
                 });
 
             modelBuilder.Entity("BikeRentalAgency.Models.Customer", b =>
@@ -182,32 +137,6 @@ namespace BikeRentalAgency.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Employees");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Admin = true,
-                            FirstName = "John",
-                            LastName = "Smith",
-                            LocationId = 2
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Admin = false,
-                            FirstName = "Tyler",
-                            LastName = "Johnson",
-                            LocationId = 1
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Admin = false,
-                            FirstName = "Banana",
-                            LastName = "Backpack",
-                            LocationId = 4
-                        });
                 });
 
             modelBuilder.Entity("BikeRentalAgency.Models.Location", b =>
@@ -239,53 +168,6 @@ namespace BikeRentalAgency.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Locations");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Address = "123 North Street",
-                            BranchEmail = "JaxBranch@KoolBikes.com",
-                            City = "Jacksonville",
-                            State = "NC",
-                            Zip = 28542
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Address = "456 South Street",
-                            BranchEmail = "NewBern@KoolBikes.com",
-                            City = "New Bern",
-                            State = "NC",
-                            Zip = 25343
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Address = "678 West Street",
-                            BranchEmail = "Wilminton@KoolBikes.com",
-                            City = "Wilmington",
-                            State = "NC",
-                            Zip = 24423
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Address = "234 East Street",
-                            BranchEmail = "Raleigh@KoolBikes.com",
-                            City = "Raleigh",
-                            State = "NC",
-                            Zip = 24242
-                        },
-                        new
-                        {
-                            Id = 5,
-                            Address = "525 Center Street",
-                            BranchEmail = "Emerald@KoolBikes.com",
-                            City = "Emerald Isle",
-                            State = "NC",
-                            Zip = 26876
-                        });
                 });
 
             modelBuilder.Entity("BikeRentalAgency.Models.Reservations", b =>

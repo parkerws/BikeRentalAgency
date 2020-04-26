@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace BikeRentalAgency.Models
 {
     public class Location
     {
-
         [Key]
         public int Id { get; set; }
 
@@ -24,7 +19,7 @@ namespace BikeRentalAgency.Models
         [Required]
         public int Zip { get; set; }
 
-        
-
+        [Required]
+        public string BranchEmail { get; set; }
     }
 }

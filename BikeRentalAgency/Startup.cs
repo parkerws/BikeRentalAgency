@@ -49,6 +49,9 @@ namespace BikeRentalAgency
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                //endpoints.MapControllerRoute(
+                    //name: "default",
+                    //pattern: "{controller=admin}/{action=bikes}");
             });
         }
     }

@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace BikeRentalAgency.Models
 {
     public class Customer
     {
-
         [Key]
         public int Id { get; set; }
 
@@ -36,5 +32,7 @@ namespace BikeRentalAgency.Models
         [Required]
         [StringLength(5)]
         public int Zip { get; set; }
+
+        public List<Reservations> Reservations { get; set; }
     }
 }

@@ -13,7 +13,6 @@ namespace BikeRentalAgency.Models
         [Key]
         public int Id { get; set; }
 
-
         [ForeignKey("Customer")]
         public int CustomerId { get; set; }
 
@@ -24,5 +23,8 @@ namespace BikeRentalAgency.Models
         [Required]
         [DataType(DataType.Date)]
         public DateTime EndDate { get; set; }
+
+        public List<Bikes> Bikes { get; set; }
+
     }
 }
