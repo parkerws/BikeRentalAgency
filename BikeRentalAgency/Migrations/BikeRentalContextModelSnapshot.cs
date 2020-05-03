@@ -158,6 +158,19 @@ namespace BikeRentalAgency.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Customers");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Address = "212 Front St",
+                            City = "Jacksonville",
+                            FirstName = "John",
+                            LastName = "Smith",
+                            PhoneNumber = "123-456-7890",
+                            State = "NC",
+                            Zip = 12345
+                        });
                 });
 
             modelBuilder.Entity("BikeRentalAgency.Models.Employees", b =>
@@ -306,6 +319,8 @@ namespace BikeRentalAgency.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CustomerId");
+
                     b.ToTable("Reservations");
                 });
 
@@ -314,6 +329,15 @@ namespace BikeRentalAgency.Migrations
                     b.HasOne("BikeRentalAgency.Models.Reservations", null)
                         .WithMany("Bikes")
                         .HasForeignKey("ReservationsId");
+                });
+
+            modelBuilder.Entity("BikeRentalAgency.Models.Reservations", b =>
+                {
+                    b.HasOne("BikeRentalAgency.Models.Customer", null)
+                        .WithMany("Reservations")
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

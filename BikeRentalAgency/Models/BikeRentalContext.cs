@@ -47,6 +47,12 @@ namespace BikeRentalAgency.Context
                 new Employees {Id = 2, Admin = false, FirstName = "Tyler", LastName = "Johnson", LocationId = 1},
                 new Employees {Id = 3, Admin = false, FirstName = "Banana", LastName = "Backpack", LocationId = 4});
 
+            modelBuilder.Entity<Customer>().HasData(
+                new Customer
+                {
+                    Id = 1, FirstName = "John", LastName = "Smith", PhoneNumber = "123-456-7890", Address = "212 Front St", City = "Jacksonville", State = "NC", Zip = 12345
+                });
+
         }
     }
 }

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using BikeRentalAgency.Context;
 using BikeRentalAgency.Models;
+using BikeRentalAgency.Repository;
 
 namespace BikeRentalAgency.Controllers
 {
@@ -14,97 +15,131 @@ namespace BikeRentalAgency.Controllers
     [ApiController]
     public class CustomersController : ControllerBase
     {
-        private readonly BikeRentalContext _context;
+        private ICustomerRepository repo;
 
-        public CustomersController(BikeRentalContext context)
+        public CustomersController(ICustomerRepository _customerRepository)
         {
-            _context = context;
+            repo = _customerRepository;
         }
 
         // GET: api/Customers
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Customer>>> GetCustomers()
+        public async Task<IActionResult> GetCustomers()
         {
-            return await _context.Customers.ToListAsync();
+            try
+            {
+                var customers = await repo.GetCustomers();
+                if (customers == null)
+                {
+                    return NotFound();
+                }
+                return Ok(customers);
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
         }
 
         // GET: api/Customers/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Customer>> GetCustomer(int id)
+        public async Task<ActionResult<Customer>> GetCustomer(int? id)
         {
-            var customer = await _context.Customers.FindAsync(id);
-
-            if (customer == null)
+            if (id == null)
             {
-                return NotFound();
+                return BadRequest();
             }
-
-            return customer;
+            try
+            {
+                var customer = await repo.GetCustomer(id);
+                if (customer == null)
+                {
+                    return NotFound();
+                }
+                return Ok(customer);
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
         }
 
         // PUT: api/Customers/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutCustomer(int id, Customer customer)
+        [HttpPut("Customer")]
+        public async Task<IActionResult> UpdateEmployee([FromBody] Customer customer)
         {
-            if (id != customer.Id)
+            if (ModelState.IsValid)
             {
-                return BadRequest();
-            }
-
-            _context.Entry(customer).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!CustomerExists(id))
+                try
                 {
-                    return NotFound();
+                    await repo.UpdateCustomer(customer);
+                    return Ok();
                 }
-                else
+                catch (Exception)
                 {
-                    throw;
+                    return BadRequest();
                 }
             }
-
-            return NoContent();
+            return BadRequest();
         }
 
         // POST: api/Customers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
-        public async Task<ActionResult<Customer>> PostCustomer(Customer customer)
+        public async Task<ActionResult<Customer>> AddCustomer([FromBody]Customer customer)
         {
-            _context.Customers.Add(customer);
-            await _context.SaveChangesAsync();
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var custId = await repo.AddCustomer(customer);
+                    if (custId > 0)
+                    {
+                        return Ok(custId);
+                    }
+                    else
+                    {
+                        return NotFound();
+                    }
 
-            return CreatedAtAction("GetCustomer", new { id = customer.Id }, customer);
+                }
+                catch (Exception)
+                {
+                    return BadRequest();
+                }
+            }
+
+            return BadRequest();
         }
 
         // DELETE: api/Customers/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Customer>> DeleteCustomer(int id)
+        public async Task<IActionResult> DeleteCustomer(int? id)
         {
-            var customer = await _context.Customers.FindAsync(id);
-            if (customer == null)
+            int result = 0;
+            if (id == null)
             {
-                return NotFound();
+                return BadRequest();
             }
 
-            _context.Customers.Remove(customer);
-            await _context.SaveChangesAsync();
+            try
+            {
+                result = await repo.DeleteCustomer(id);
+                if (result == 0)
+                {
+                    return NotFound();
+                }
 
-            return customer;
+                return Ok();
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
         }
 
-        private bool CustomerExists(int id)
-        {
-            return _context.Customers.Any(e => e.Id == id);
-        }
     }
 }

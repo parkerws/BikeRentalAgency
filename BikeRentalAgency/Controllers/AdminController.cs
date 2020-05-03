@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using BikeRentalAgency.Context;
 using BikeRentalAgency.Models;
+using BikeRentalAgency.Repository;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -14,112 +15,261 @@ namespace BikeRentalAgency.Controllers
     [ApiController]
     public class AdminController : ControllerBase
     {
-        private readonly BikeRentalContext _context;
+        private IAdminRepository adminRepository;
 
-        public AdminController(BikeRentalContext context)
+        public AdminController(IAdminRepository _adminRepository)
         {
-            _context = context;
+            adminRepository = _adminRepository;
         }
 
         //GET: Bikes
-        [HttpGet("Bikes")]
-        public async Task<ActionResult<IEnumerable<Bikes>>> GetBikes()
+        [HttpGet("GetBikes")]
+        public async Task<IActionResult> GetBikes()
         {
+            try
+            {
+                var bikes = await adminRepository.GetBikes();
+                if (bikes == null)
+                {
+                    return NotFound();
+                }
 
-            var bikes = _context.Bikes.OrderBy(x => x.Id);
-            return await bikes.ToListAsync();
+                return Ok(bikes);
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+            
         }
 
-        [HttpGet("Bikes/{id}")]
-        public async Task<ActionResult<Bikes>> GetBike(int id)
+        [HttpGet("GetBike/{id}")]
+        public async Task<IActionResult> GetBike(int? id)
         {
-
-            var bike = await _context.Bikes.FindAsync(id);
-
-            if (bike == null)
+            if (id == null)
             {
-                return NotFound();
+                return BadRequest();
             }
-            return bike;
+
+            try
+            {
+                var bike = await adminRepository.GetBike(id);
+
+                if (bike == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(bike);
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
         }
 
         [HttpGet("Locations")]
-        public async Task<ActionResult<IEnumerable<Location>>> GetLocations()
+        public async Task<IActionResult> GetLocations()
         {
-            var locations = _context.Locations.OrderBy(x => x.City);
-            return await locations.ToListAsync();
+            try
+            {
+                var locations = await adminRepository.GetLocations();
+                if (locations == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(locations);
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
         }
 
         //GET: Customers
         [HttpGet("Employees")]
-        public async Task<ActionResult<IEnumerable<Employees>>> GetEmployees()
+        public async Task<IActionResult> GetEmployees()
         {
-            var employee = _context.Employees.OrderBy(x => x.FirstName);
-            return await employee.ToListAsync();
+            try
+            {
+                var employees = adminRepository.GetEmployees();
+                if (employees == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(employees);
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            } 
         }
 
         [HttpGet("Employees/{id}")]
-        public async Task<ActionResult<Employees>> GetEmployee(int id)
+        public async Task<ActionResult<Employees>> GetEmployee(int? id)
         {
-            var employee = await _context.Employees.FindAsync(id);
-            return employee;
+            if (id == null)
+            {
+                return BadRequest();
+            }
+
+            try
+            {
+                var employee = await adminRepository.GetEmployee(id);
+
+                if (employee == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(employee);
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
         }
 
 
         [HttpPost("Bikes")]
-        public async Task<ActionResult> CreateBike(Bikes bike)
+        public async Task<IActionResult> AddBike([FromBody]Bikes bike)
         {
-            _context.Bikes.Add(bike);
-            await _context.SaveChangesAsync();
-            return CreatedAtAction("GetBike", new { id = bike.Id }, bike);
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var bikeId = await adminRepository.AddBike(bike);
+                    if (bikeId > 0)
+                    {
+                        return Ok(bikeId);
+                    }
+                    else
+                    {
+                        return NotFound();
+                    }
+                }
+                catch (Exception)
+                {
+                    return BadRequest();
+                }
+            }
+
+            return BadRequest();
         }
 
         [HttpPost("Customers")]
-        public async Task<ActionResult> CreateCustomer(Employees employee)
+        public async Task<IActionResult> AddCustomer([FromBody]Employees employee)
         {
-            _context.Employees.Add(employee);
-            await _context.SaveChangesAsync();
-            return CreatedAtAction("GetEmployee", new { id = employee.Id }, employee);
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var empId = await adminRepository.AddEmployee(employee);
+                    if (empId > 0)
+                    {
+                        return Ok(empId);
+                    }
+                    else
+                    {
+                        return NotFound();
+                    }
+                }
+                catch (Exception)
+                {
+                    return BadRequest();
+                }
+            }
+
+            return BadRequest();
         }
 
         [HttpDelete("Bikes/{id}")]
-        public async Task<ActionResult<Bikes>> DeleteBike(int id)
+        public async Task<IActionResult> DeleteBike(int? id)
         {
-            var bike = await _context.Bikes.FindAsync(id);
-            if (bike == null)
+            int result = 0;
+            if (id == null)
             {
-                return NotFound();
+                return BadRequest();
             }
 
-            _context.Bikes.Remove(bike);
-            await _context.SaveChangesAsync();
+            try
+            {
+                result = await adminRepository.DeleteBike(id);
+                if (result == 0)
+                {
+                    return NotFound();
+                }
 
-            return bike;
+                return Ok();
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
         }
 
         [HttpDelete("Customers/{id}")]
-        public async Task<ActionResult<Employees>> DeleteEmployee(int id)
+        public async Task<ActionResult<Employees>> DeleteEmployee(int? id)
         {
-            var employee = await _context.Employees.FindAsync(id);
-            if (employee == null)
+            int result = 0;
+            if (id == null)
             {
-                return NotFound();
+                return BadRequest();
             }
 
-            _context.Employees.Remove(employee);
-            await _context.SaveChangesAsync();
+            try
+            {
+                result = await adminRepository.DeleteEmployee(id);
+                if (result == 0)
+                {
+                    return NotFound();
+                }
 
-            return employee;
+                return Ok();
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
         }
 
-        private bool BikeExists(int id)
+        [HttpPut("Bikes")]
+        public async Task<IActionResult> UpdateBike([FromBody] Bikes bike)
         {
-            return _context.Bikes.Any(x => x.Id == id);
-        }
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    await adminRepository.UpdateBike(bike);
+                    return Ok();
+                }
+                catch (Exception)
+                {
+                    return BadRequest();
+                }
+            }
 
-        private bool EmployeeExists(int id)
+            return BadRequest();
+        }
+        [HttpPut("Employees")]
+        public async Task<IActionResult> UpdateEmployee([FromBody] Employees employees)
         {
-            return _context.Customers.Any(x => x.Id == id);
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    await adminRepository.UpdateEmployee(employees);
+                    return Ok();
+                }
+                catch (Exception)
+                {
+                    return BadRequest();
+                }
+            }
+
+            return BadRequest();
         }
     }
 }

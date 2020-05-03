@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using BikeRentalAgency.Context;
 using BikeRentalAgency.Models;
+using BikeRentalAgency.Repository;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace BikeRentalAgency.Controllers
@@ -15,111 +16,134 @@ namespace BikeRentalAgency.Controllers
     [ApiController]
     public class ReservationController : ControllerBase
     {
-        private readonly BikeRentalContext _context;
+        private ICustomerRepository repo;
 
-        public ReservationController(BikeRentalContext context)
+        public ReservationController(ICustomerRepository _customerRepository)
         {
-            _context = context;
+            repo = _customerRepository;
         }
 
-        // GET: api/Reservations
+        // GET: api/Customers
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Reservations>>> GetReservations()
+        public async Task<IActionResult> GetReservations()
         {
-            return await _context.Reservations.ToListAsync();
-        }
-
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Reservations>>> GetReservationByCustomerId(int id)
-        {
-            var reservationList = await _context.Reservations.Where(x => x.CustomerId == id).ToListAsync();
-
-            if (reservationList == null)
+            try
             {
-                return NotFound();
-            }
+                var customers = await repo.GetCustomers();
+                if (customers == null)
+                {
+                    return NotFound();
+                }
 
-            return reservationList;
+                return Ok(customers);
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
         }
 
-        // GET: api/Reservations/5
+        // GET: api/Customers/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Reservations>> GetReservation(int id)
+        public async Task<IActionResult> GetCustomerReservation(int? id)
         {
-            var reservations = await _context.Reservations.FindAsync(id);
-
-            if (reservations == null)
-            {
-                return NotFound();
-            }
-
-            return reservations;
-        }
-
-        // PUT: api/Customers/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutReservation(int id, Reservations reservations)
-        {
-            if (id != reservations.Id)
+            if (id == null)
             {
                 return BadRequest();
             }
 
-            _context.Entry(reservations).State = EntityState.Modified;
-
             try
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!CustomerExists(id))
+                var reservation = await repo.GetCustomerReservation(id);
+                if (reservation == null)
                 {
                     return NotFound();
                 }
-                else
+
+                return Ok(reservation);
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
+
+        // PUT: api/Customers/5
+        // To protect from overposting attacks, enable the specific properties you want to bind to, for
+        // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
+        [HttpPut]
+        public async Task<IActionResult> UpdateReservation([FromBody] Reservations reservation)
+        {
+            if (ModelState.IsValid)
+            {
+                try
                 {
-                    throw;
+                    await repo.UpdateReservation(reservation);
+                    return Ok();
+                }
+                catch (Exception)
+                {
+                    return BadRequest();
                 }
             }
 
-            return NoContent();
+            return BadRequest();
         }
 
-        // POST: api/Reservations
-
+        // POST: api/Customers
+        // To protect from overposting attacks, enable the specific properties you want to bind to, for
+        // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
-        public async Task<ActionResult<Reservations>> PostReservation(Reservations reservations)
+        public async Task<IActionResult> AddReservation([FromBody] Reservations reservations)
         {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var resId = await repo.AddReservation(reservations);
+                    if (resId > 0)
+                    {
+                        return Ok(resId);
+                    }
+                    else
+                    {
+                        return NotFound();
+                    }
 
-            
-            _context.Reservations.Add(reservations);
-            
+                }
+                catch (Exception)
+                {
+                    return BadRequest();
+                }
+            }
 
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetReservation", new { id = reservations.Id }, reservations);
+            return BadRequest();
         }
 
         // DELETE: api/Customers/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Reservations>> DeleteReservation(int id)
+        public async Task<IActionResult> DeleteReservation(int? id)
         {
-            var reservation = await _context.Reservations.FindAsync(id);
-            if (reservation == null)
+            int result = 0;
+            if (id == null)
             {
-                return NotFound();
+                return BadRequest();
             }
 
-            _context.Reservations.Remove(reservation);
-            await _context.SaveChangesAsync();
+            try
+            {
+                result = await repo.DeleteReservation(id);
+                if (result == 0)
+                {
+                    return NotFound();
+                }
 
-            return reservation;
-        }
-
-        private bool CustomerExists(int id)
-        {
-            return _context.Customers.Any(e => e.Id == id);
+                return Ok();
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
         }
     }
 }

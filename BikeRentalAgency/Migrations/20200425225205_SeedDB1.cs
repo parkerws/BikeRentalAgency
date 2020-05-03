@@ -39,6 +39,7 @@ namespace BikeRentalAgency.Migrations
                     { 4, "234 East Street", "Raleigh@KoolBikes.com", "Raleigh", "NC", 24242 },
                     { 5, "525 Center Street", "Emerald@KoolBikes.com", "Emerald Isle", "NC", 26876 }
                 });
+            
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
