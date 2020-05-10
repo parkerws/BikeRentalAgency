@@ -20,5 +20,8 @@ namespace BikeRentalMVC.Repository
         Task<bool> DeleteEmployee(int? bikeId);
         Task<bool> UpdateBike(Bikes bike);
         Task<bool> UpdateEmployee(Employees employee);
+        Task<bool> AddReservation(Reservations reservation);
+        Task<bool> DeleteReservation(int? id);
+        Task<bool> UpdateReservation(Reservations reservation);
     }
 }

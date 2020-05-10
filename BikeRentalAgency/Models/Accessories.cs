@@ -17,13 +17,10 @@ namespace BikeRentalAgency.Models
         Repairkit
     }
 
-    public class Accessories
+    public class Accessories : IEntity
     {
         [Key]
         public int Id { get; set; }
-
-        [ForeignKey("Location")]
-        public int LocationId { get; set; }
 
         [Required]
         public BikeAccessories Accessory { get; set; }

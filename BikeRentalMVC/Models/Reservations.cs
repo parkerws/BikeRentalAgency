@@ -24,7 +24,7 @@ namespace BikeRentalAgency.Models
         [DataType(DataType.Date)]
         public DateTime EndDate { get; set; }
 
-        public List<Bikes> Bikes { get; set; }
+        public Bikes Bikes { get; set; }
 
     }
 }

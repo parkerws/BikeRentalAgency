@@ -27,7 +27,7 @@ namespace BikeRentalMVC.Repository
 
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-                HttpResponseMessage res = await client.GetAsync($"Bikes");
+                HttpResponseMessage res = await client.GetAsync("GetBikes");
 
                 if (res.IsSuccessStatusCode)
                 {
@@ -209,5 +209,45 @@ namespace BikeRentalMVC.Repository
                 return result.IsSuccessStatusCode;
             }
         }
+        public async Task<bool> AddReservation(Reservations reservation)
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(baseUrl);
+
+                HttpResponseMessage res = await client.PostAsJsonAsync(
+                    "Reservation", reservation);
+
+                return res.IsSuccessStatusCode;
+            }
+        }
+
+        public async Task<bool> DeleteReservation(int? id)
+        {
+            bool successful = false;
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(baseUrl);
+                HttpResponseMessage response = await client.DeleteAsync(
+                    $"Reservation/{id}");
+                successful = response.IsSuccessStatusCode;
+
+            }
+
+            return successful;
+        }
+
+        public async Task<bool> UpdateReservation(Reservations reservation)
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(baseUrl);
+                HttpResponseMessage result = await client.PutAsJsonAsync(
+                    "Reservation", reservation);
+
+                return result.IsSuccessStatusCode;
+            }
+        }
+
     }
 }

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace BikeRentalAgency.Models
 {
-    public class Employees
+    public class Employees : IEntity
     {
         public int Id { get; set; }
         public int LocationId { get; set; }

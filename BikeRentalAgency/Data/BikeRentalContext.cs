@@ -53,6 +53,14 @@ namespace BikeRentalAgency.Context
                     Id = 1, FirstName = "John", LastName = "Smith", PhoneNumber = "123-456-7890", Address = "212 Front St", City = "Jacksonville", State = "NC", Zip = 12345
                 });
 
+            modelBuilder.Entity<Accessories>().HasData(
+                new Accessories {Id = 1, Accessory = BikeAccessories.Tirepump},
+                new Accessories {Id = 2, Accessory = BikeAccessories.Basket},
+                new Accessories {Id = 3, Accessory = BikeAccessories.Flashlight},
+                new Accessories {Id = 4, Accessory = BikeAccessories.Helmet},
+                new Accessories {Id = 5, Accessory = BikeAccessories.Repairkit},
+                new Accessories {Id = 6, Accessory = BikeAccessories.Trailer});
+
         }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using BikeRentalAgency.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using BikeRentalMVC.Models;
@@ -27,6 +28,14 @@ namespace BikeRentalMVC.Controllers
         {
             return View();
         }
+
+        [HttpGet("Login")]
+        public async Task<IActionResult> Login()
+        {
+            return View();
+        }
+
+
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

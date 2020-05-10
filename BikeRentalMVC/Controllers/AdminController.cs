@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using BikeRentalAgency.Models;
 using BikeRentalMVC.Repository;
+using BikeRentalMVC.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,14 +13,15 @@ namespace BikeRentalMVC.Controllers
 {
     public class AdminController : Controller
     {
-        private string baseUrl = "https://localhost:44354/admin/";
 
         private IAdminRepository repo;
         public AdminController(IAdminRepository repository)
         {
             repo = repository;
         }
-        [HttpGet("Employee")]
+
+
+        [HttpGet("Employees")]
         public async Task<ActionResult> EmployeeIndex()
         {
             var model = await repo.GetEmployees();
@@ -33,7 +35,7 @@ namespace BikeRentalMVC.Controllers
             return View(employee);
         }
 
-        [HttpGet("Bikes")]
+        [HttpGet("GetBikes")]
         public async Task<ActionResult> BikeIndex()
         {
             var model = await repo.GetBikes();
@@ -60,7 +62,6 @@ namespace BikeRentalMVC.Controllers
         {
 
             TempData["message"] = string.Empty;
-            string message;
             if (employee == null) return View(new Employees());
 
             bool succeeded = await repo.AddEmployee(employee);
@@ -91,6 +92,54 @@ namespace BikeRentalMVC.Controllers
 
         }
 
+        // GET: Reservation/Create
+        [HttpGet("NewReservation")]
+        public async Task<ActionResult> NewReservation()
+        {
+            var bikes = await repo.GetBikes();
+            return View(bikes);
+        }
+
+        [HttpGet("Reservation")]
+        public async Task<ActionResult> ConfirmReservation(Bikes bike)
+        {
+            ReservationCreateViewModel reserve = new ReservationCreateViewModel {Bike = bike};
+
+            return View("Reservation", reserve);
+        }
+
+        // POST: Reservation/Create
+        [HttpPost("Reserve")]
+        public async Task<ActionResult> Reserve(ReservationCreateViewModel res)
+        {
+            TempData["message"] = string.Empty;
+            //if (res == null) return View(new ReservationCreateViewModel());
+            Reservations reserve = new Reservations
+            {
+                Bikes = res.Bike,
+                BeginDate = res.BeginDate,
+                EndDate = res.EndDate
+
+            };
+
+
+
+            bool succeeded = await repo.AddReservation(reserve);
+            //if (succeeded)
+            //{
+            //    return RedirectToAction("NewReservation");
+            //}
+
+            //return View("BikeIndex");
+            return RedirectToAction("ReserveComplete");
+
+        }
+
+        [HttpGet("ReserveComplete")]
+        public ActionResult ReserveComplete()
+        {
+            return View();
+        }
 
         //// GET: Admin/Delete/5
         //public ActionResult Delete(int id)

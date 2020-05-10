@@ -11,7 +11,7 @@ using Newtonsoft.Json;
 
 namespace BikeRentalMVC.Repository
 {
-    public class CustomerRepository
+    public class CustomerRepository : ICustomerRepository
     {
         private string baseUrl = "https://localhost:44305/api/customers";
         public async Task<List<Customer>> GetCustomers()
@@ -118,44 +118,6 @@ namespace BikeRentalMVC.Repository
             }
         }
 
-        public async Task<bool> AddReservation(Reservations reservation)
-        {
-            using (var client = new HttpClient())
-            {
-                client.BaseAddress = new Uri(baseUrl);
-
-                HttpResponseMessage res = await client.PostAsJsonAsync(
-                    "Reservation", reservation);
-
-                return res.IsSuccessStatusCode;
-            }
-        }
-
-        public async Task<bool> DeleteReservation(int? id)
-        {
-            bool successful = false;
-            using (var client = new HttpClient())
-            {
-                client.BaseAddress = new Uri(baseUrl);
-                HttpResponseMessage response = await client.DeleteAsync(
-                    $"Reservation/{id}");
-                successful = response.IsSuccessStatusCode;
-
-            }
-
-            return successful;
-        }
-
-        public async Task<bool> UpdateReservation(Reservations reservation)
-        {
-            using (var client = new HttpClient())
-            {
-                client.BaseAddress = new Uri(baseUrl);
-                HttpResponseMessage result = await client.PutAsJsonAsync(
-                    "Reservation", reservation);
-
-                return result.IsSuccessStatusCode;
-            }
-        }
+        
     }
 }

@@ -23,7 +23,7 @@ namespace BikeRentalAgency.Models
         Large
     }
 
-    public class Bikes
+    public class Bikes : IEntity
     {
         [Key]
         public int Id { get; set; }

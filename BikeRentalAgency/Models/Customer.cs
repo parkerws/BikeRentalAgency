@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace BikeRentalAgency.Models
 {
-    public class Customer
+    public class Customer : IEntity
     {
         [Key]
         public int Id { get; set; }

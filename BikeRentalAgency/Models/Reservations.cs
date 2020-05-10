@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BikeRentalAgency.Models
 {
-    public class Reservations
+    public class Reservations : IEntity
     {
 
         [Key]
@@ -24,7 +24,8 @@ namespace BikeRentalAgency.Models
         [DataType(DataType.Date)]
         public DateTime EndDate { get; set; }
 
-        public List<Bikes> Bikes { get; set; }
+        public Bikes Bikes { get; set; }
+        
 
     }
 }

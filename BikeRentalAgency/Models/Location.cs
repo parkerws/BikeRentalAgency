@@ -2,7 +2,7 @@
 
 namespace BikeRentalAgency.Models
 {
-    public class Location
+    public class Location : IEntity
     {
         [Key]
         public int Id { get; set; }

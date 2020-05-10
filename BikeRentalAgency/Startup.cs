@@ -3,9 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using BikeRentalAgency.Context;
+using BikeRentalAgency.Controllers;
+using BikeRentalAgency.Data;
+using BikeRentalAgency.Repository;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -30,6 +34,14 @@ namespace BikeRentalAgency
             services.AddControllers();
             services.AddDbContext<BikeRentalContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("UserDatabase")));
+            //services.AddDbContext<AppIdentityDbContext>(options =>
+            //    options.UseSqlServer(Configuration.GetConnectionString("IdentityDatabase")));
+            //services.AddIdentity<IdentityUser, IdentityRole>()
+            //    .AddEntityFrameworkStores<AppIdentityDbContext>()
+            //    .AddDefaultTokenProviders();
+            services.AddScoped<IAdminRepository, AdminRepository>();
+            services.AddScoped<ICustomerRepository, CustomerRepository>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -45,6 +57,7 @@ namespace BikeRentalAgency
             app.UseRouting();
 
             app.UseAuthorization();
+            //app.UseAuthentication();
 
             app.UseEndpoints(endpoints =>
             {
@@ -53,6 +66,7 @@ namespace BikeRentalAgency
                     //name: "default",
                     //pattern: "{controller=admin}/{action=bikes}");
             });
+            //IdentitySeedData.EnsurePopulated(app);
         }
     }
 }
