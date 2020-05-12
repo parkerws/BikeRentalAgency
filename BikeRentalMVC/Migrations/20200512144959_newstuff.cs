@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace BikeRentalMVC.Migrations
 {
-    public partial class CreateIdentitySchema : Migration
+    public partial class newstuff : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

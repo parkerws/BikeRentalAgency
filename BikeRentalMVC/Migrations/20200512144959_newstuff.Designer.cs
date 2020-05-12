@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BikeRentalMVC.Migrations
 {
     [DbContext(typeof(BikeRentalMVCContext))]
-    [Migration("20200510000823_CreateIdentitySchema")]
-    partial class CreateIdentitySchema
+    [Migration("20200512144959_newstuff")]
+    partial class newstuff
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
